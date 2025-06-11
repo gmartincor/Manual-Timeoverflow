@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manual de Instalación de Timeoverflow</title>
+    <title>Timeoverflow Installation Manual</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
@@ -11,127 +11,118 @@
 </head>
 <body>
     <div class="container">
-        <h1>Manual de Instalación de Timeoverflow</h1>
+        <h1>Timeoverflow Installation Manual</h1>
         
-        <h2>Índice</h2>
+        <h2>Table of Contents</h2>
         <ol>
-            <li><a href="#introduccion">Introducción</a></li>
-            <li><a href="#requisitos">Requisitos Previos</a></li>
-            <li><a href="#instalacion-local">Instalación Local</a>
+            <li><a href="#introduction">Introduction</a></li>
+            <li><a href="#prerequisites">Prerequisites</a></li>
+            <li><a href="#local-installation">Local Installation</a>
                 <ul>
-                    <li><a href="#configuracion-entorno">Configuración del Entorno</a></li>
-                    <li><a href="#configuracion-bd">Configuración de la Base de Datos</a></li>
-                    <li><a href="#inicializacion">Inicialización de la Aplicación</a></li>
+                    <li><a href="#environment-setup">Environment Setup</a></li>
+                    <li><a href="#database-configuration">Database Configuration</a></li>
+                    <li><a href="#application-initialization">Application Initialization</a></li>
                 </ul>
             </li>
-            <li><a href="#problemas">Solución de Problemas Comunes</a></li>
-            <li><a href="#referencias">Referencias</a></li>
+            <li><a href="#troubleshooting">Common Troubleshooting</a></li>
+            <li><a href="#references">References</a></li>
         </ol>
         
-        <h2 id="introduccion">Introducción</h2>
-        <p>Timeoverflow es un sistema de banco de tiempo diseñado para facilitar el intercambio de servicios entre miembros de una comunidad. Este manual proporciona instrucciones para configurar un entorno de desarrollo local y comenzar a contribuir al proyecto.</p>
+        <h2 id="introduction">Introduction</h2>
+        <p>Timeoverflow is a time bank system designed to facilitate the exchange of services between community members. This manual provides instructions to set up a local development environment and start contributing to the project.</p>
         
-        <h2 id="requisitos">Requisitos Previos</h2>
-        <p>Antes de comenzar la instalación, asegúrese de tener instalados los siguientes componentes:</p>
+        <h2 id="prerequisites">Prerequisites</h2>
+        <p>Before starting the installation, make sure you have the following components installed:</p>
         <ul>
-            <li><strong>Ruby</strong>: Versión 3.2.2</li>
-            <li><strong>Rails</strong>: Versión 7.2</li>
-            <li><strong>PostgreSQL</strong>: Versión 14 o superior</li>
-            <li><strong>Node.js</strong>: Versión 16 o superior (para la compilación de assets)</li>
-            <li><strong>Git</strong>: Para clonar el repositorio</li>
+            <li><strong>Ruby</strong>: Version 3.2.2</li>
+            <li><strong>Rails</strong>: Version 7.2</li>
+            <li><strong>PostgreSQL</strong>: Version 14 or higher</li>
+            <li><strong>Node.js</strong>: Version 16 or higher (for asset compilation)</li>
+            <li><strong>Git</strong>: To clone the repository</li>
         </ul>
         
-        <h2 id="instalacion-local">Instalación Local</h2>
+        <h2 id="local-installation">Local Installation</h2>
         
-        <h3 id="configuracion-entorno">Configuración del Entorno</h3>
+        <h3 id="environment-setup">Environment Setup</h3>
         <ol>
-            <li>Clone el repositorio de Timeoverflow:
+            <li>Clone the Timeoverflow repository:
                 <pre><code class="language-bash">git clone https://github.com/coopdevs/timeoverflow.git
 cd timeoverflow</code></pre>
             </li>
-            <li>Instale Ruby 3.2.2 si no lo tiene:
-                <pre><code class="language-bash"># Si usa rbenv (recomendado)
-rbenv install 3.2.2
-
-# Si usa rvm
-rvm install 3.2.2
-rvm use 3.2.2</code></pre>
-                <p><strong>Nota:</strong> Al entrar al directorio del proyecto, rbenv/rvm cambiará automáticamente a Ruby 3.2.2 gracias al archivo <code>.ruby-version</code>.</p>
+            <li>Install Ruby 3.2.2 if you don't have it:
+                <pre><code class="language-bash">rbenv install 3.2.2</code></pre>
+                <p><strong>Note:</strong> When entering the project directory, rbenv will automatically switch to Ruby 3.2.2 thanks to the <code>.ruby-version</code> file.</p>
             </li>
-            <li>Instale las gemas de Ruby requeridas (incluyendo Rails 7.2):
+            <li>Install the required Ruby gems (including Rails 7.2):
                 <pre><code class="language-bash">bundle install</code></pre>
             </li>
         </ol>
         
-        <h3 id="configuracion-bd">Configuración de la Base de Datos</h3>
+        <h3 id="database-configuration">Database Configuration</h3>
         <ol>
-            <li>Copie el archivo de configuración de variables de entorno:
+            <li>Copy the environment variables configuration file:
                 <pre><code class="language-bash">cp .env.example .env</code></pre>
             </li>
-            <li>Edite el archivo <code>.env</code> con la configuración de su base de datos PostgreSQL local si es necesario.</li>
-            <li>Ejecute el script de configuración automática:
+            <li>Edit the <code>.env</code> file with your local PostgreSQL database configuration if necessary.</li>
+            <li>Run the automatic setup script:
                 <pre><code class="language-bash">bin/setup</code></pre>
-                <p>Este script instalará las dependencias, creará las bases de datos, ejecutará las migraciones y cargará los datos iniciales.</p>
+                <p>This script will install dependencies, create databases, run migrations, and load initial data.</p>
             </li>
         </ol>
         
-        <h3 id="inicializacion">Inicialización de la Aplicación</h3>
+        <h3 id="application-initialization">Application Initialization</h3>
         <ol>
-            <li>Inicie el servidor de desarrollo:
+            <li>Start the development server:
                 <pre><code class="language-bash">bin/rails server</code></pre>
             </li>
-            <li>En una terminal separada, inicie Sidekiq para procesar tareas en segundo plano:
+            <li>In a separate terminal, start Sidekiq to process background tasks:
                 <pre><code class="language-bash">bundle exec sidekiq</code></pre>
             </li>
-            <li>Acceda a la aplicación a través de su navegador web:
+            <li>Access the application through your web browser:
                 <pre><code>http://localhost:3000</code></pre>
             </li>
-            <li>Use las credenciales predeterminadas para iniciar sesión:
+            <li>Use the default credentials to log in:
                 <ul>
                     <li>Email: <code>admin@timeoverflow.org</code></li>
-                    <li>Contraseña: <code>1234test</code></li>
+                    <li>Password: <code>1234test</code></li>
                 </ul>
             </li>
         </ol>
         
-        <h2 id="problemas">Solución de Problemas Comunes</h2>
+        <h2 id="troubleshooting">Common Troubleshooting</h2>
         
-        <h3>Error de conexión a la base de datos</h3>
+        <h3>Database connection error</h3>
         <ul>
-            <li>Verifique que PostgreSQL esté en ejecución</li>
-            <li>Revise la configuración en el archivo <code>.env</code></li>
+            <li>Verify that PostgreSQL is running</li>
+            <li>Check the configuration in the <code>.env</code> file</li>
         </ul>
         
         <h3>Error "Ruby version not installed"</h3>
         <ul>
-            <li>Use rbenv o rvm para instalar Ruby 3.2.2:
+            <li>Use rbenv to install Ruby 3.2.2:
                 <pre><code class="language-bash">rbenv install 3.2.2</code></pre>
             </li>
         </ul>
         
-        <h3>Error de JavaScript runtime</h3>
+        <h3>JavaScript runtime error</h3>
         <ul>
-            <li>Asegúrese de tener Node.js 16+ instalado</li>
+            <li>Make sure you have Node.js 16+ installed</li>
         </ul>
         
-        <h3>Si bin/setup falla</h3>
+        <h3>If bin/setup fails</h3>
         <ul>
-            <li>Alternativa manual:
-                <pre><code class="language-bash">psql -U tu_usuario -d timeoverflow_development -f db/structure.sql
+            <li>Manual alternative:
+                <pre><code class="language-bash">psql -U your_user -d timeoverflow_development -f db/structure.sql
 bundle exec rails db:seed</code></pre>
             </li>
         </ul>
         
-        <h2 id="referencias">Referencias</h2>
+        <h2 id="references">References</h2>
         <ul>
-            <li>Repositorio oficial: <a href="https://github.com/coopdevs/timeoverflow" target="_blank">https://github.com/coopdevs/timeoverflow</a></li>
-            <li>Documentación de Ruby on Rails: <a href="https://guides.rubyonrails.org/" target="_blank">https://guides.rubyonrails.org/</a></li>
-            <li>Documentación de PostgreSQL: <a href="https://www.postgresql.org/docs/" target="_blank">https://www.postgresql.org/docs/</a></li>
+            <li>Official repository: <a href="https://github.com/coopdevs/timeoverflow" target="_blank">https://github.com/coopdevs/timeoverflow</a></li>
+            <li>Ruby on Rails documentation: <a href="https://guides.rubyonrails.org/" target="_blank">https://guides.rubyonrails.org/</a></li>
+            <li>PostgreSQL documentation: <a href="https://www.postgresql.org/docs/" target="_blank">https://www.postgresql.org/docs/</a></li>
         </ul>
     </div>
-    <footer>
-        <p>Elaborado por <strong>Guillermo Martín Correa</strong> - <script>document.write(new Date().getFullYear())</script></p>
-    </footer>
 </body>
-    
 </html>
