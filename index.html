@@ -20,28 +20,24 @@
             <li><a href="#instalacion-local">Instalación Local</a>
                 <ul>
                     <li><a href="#configuracion-entorno">Configuración del Entorno</a></li>
-                    <li><a href="#instalacion-dependencias">Instalación de Dependencias</a></li>
                     <li><a href="#configuracion-bd">Configuración de la Base de Datos</a></li>
                     <li><a href="#inicializacion">Inicialización de la Aplicación</a></li>
                 </ul>
             </li>
-            <li><a href="#docker">Instalación con Docker</a></li>
-            <li><a href="#post-instalacion">Configuración Post-Instalación</a></li>
             <li><a href="#problemas">Solución de Problemas Comunes</a></li>
             <li><a href="#referencias">Referencias</a></li>
         </ol>
         
         <h2 id="introduccion">Introducción</h2>
-        <p>Timeoverflow es un sistema de banco de tiempo diseñado para facilitar el intercambio de servicios entre miembros de una comunidad. Este manual proporciona instrucciones detalladas para instalar y configurar Timeoverflow en diferentes entornos.</p>
+        <p>Timeoverflow es un sistema de banco de tiempo diseñado para facilitar el intercambio de servicios entre miembros de una comunidad. Este manual proporciona instrucciones para configurar un entorno de desarrollo local y comenzar a contribuir al proyecto.</p>
         
         <h2 id="requisitos">Requisitos Previos</h2>
         <p>Antes de comenzar la instalación, asegúrese de tener instalados los siguientes componentes:</p>
         <ul>
-            <li><strong>Ruby</strong>: Versión 2.7.0 o superior</li>
-            <li><strong>Rails</strong>: Versión 6.0 o superior</li>
-            <li><strong>PostgreSQL</strong>: Versión 9.5 o superior</li>
-            <li><strong>Node.js</strong>: Versión 12 o superior (para la compilación de assets)</li>
-            <li><strong>Yarn</strong>: Para gestionar dependencias JavaScript</li>
+            <li><strong>Ruby</strong>: Versión 3.2.2</li>
+            <li><strong>Rails</strong>: Versión 7.2</li>
+            <li><strong>PostgreSQL</strong>: Versión 14 o superior</li>
+            <li><strong>Node.js</strong>: Versión 16 o superior (para la compilación de assets)</li>
             <li><strong>Git</strong>: Para clonar el repositorio</li>
         </ul>
         
@@ -53,67 +49,39 @@
                 <pre><code class="language-bash">git clone https://github.com/coopdevs/timeoverflow.git
 cd timeoverflow</code></pre>
             </li>
-            <li>Instale las gemas de Ruby requeridas:
-                <pre><code class="language-bash">bundle install</code></pre>
+            <li>Instale Ruby 3.2.2 si no lo tiene:
+                <pre><code class="language-bash"># Si usa rbenv (recomendado)
+rbenv install 3.2.2
+
+# Si usa rvm
+rvm install 3.2.2
+rvm use 3.2.2</code></pre>
+                <p><strong>Nota:</strong> Al entrar al directorio del proyecto, rbenv/rvm cambiará automáticamente a Ruby 3.2.2 gracias al archivo <code>.ruby-version</code>.</p>
             </li>
-            <li>Instale las dependencias de JavaScript:
-                <pre><code class="language-bash">yarn install</code></pre>
+            <li>Instale las gemas de Ruby requeridas (incluyendo Rails 7.2):
+                <pre><code class="language-bash">bundle install</code></pre>
             </li>
         </ol>
         
         <h3 id="configuracion-bd">Configuración de la Base de Datos</h3>
         <ol>
-            <li>Cree el usuario de PostgreSQL para la aplicación:
-                <pre><code class="language-bash">sudo -u postgres createuser -P timeoverflow
-# Ingrese una contraseña cuando se le solicite</code></pre>
+            <li>Copie el archivo de configuración de variables de entorno:
+                <pre><code class="language-bash">cp .env.example .env</code></pre>
             </li>
-            <li>Cree las bases de datos para desarrollo y pruebas:
-                <pre><code class="language-bash">sudo -u postgres createdb -O timeoverflow timeoverflow_development
-sudo -u postgres createdb -O timeoverflow timeoverflow_test</code></pre>
-            </li>
-            <li>Configure el archivo de conexión a la base de datos:
-                <pre><code class="language-bash">cp config/database.yml.example config/database.yml</code></pre>
-            </li>
-            <li>Edite el archivo <code>config/database.yml</code> con la información de su base de datos:
-                <pre><code class="language-yaml">default: &default
-  adapter: postgresql
-  encoding: unicode
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  username: timeoverflow
-  password: su_contraseña
-
-development:
-  <<: *default
-  database: timeoverflow_development
-
-test:
-  <<: *default
-  database: timeoverflow_test
-
-production:
-  <<: *default
-  database: timeoverflow_production
-  username: timeoverflow
-  password: <%= ENV['TIMEOVERFLOW_DATABASE_PASSWORD'] %></code></pre>
-            </li>
-            <li>Genere el archivo de configuración de la aplicación:
-                <pre><code class="language-bash">cp config/application.yml.example config/application.yml</code></pre>
-            </li>
-            <li>Ejecute las migraciones para crear las tablas de la base de datos:
-                <pre><code class="language-bash">bundle exec rails db:schema:load</code></pre>
-            </li>
-            <li>Cargue los datos iniciales:
-                <pre><code class="language-bash">bundle exec rails db:seed</code></pre>
+            <li>Edite el archivo <code>.env</code> con la configuración de su base de datos PostgreSQL local si es necesario.</li>
+            <li>Ejecute el script de configuración automática:
+                <pre><code class="language-bash">bin/setup</code></pre>
+                <p>Este script instalará las dependencias, creará las bases de datos, ejecutará las migraciones y cargará los datos iniciales.</p>
             </li>
         </ol>
         
         <h3 id="inicializacion">Inicialización de la Aplicación</h3>
         <ol>
-            <li>Compile los assets:
-                <pre><code class="language-bash">bundle exec rails assets:precompile</code></pre>
-            </li>
             <li>Inicie el servidor de desarrollo:
-                <pre><code class="language-bash">bundle exec rails server</code></pre>
+                <pre><code class="language-bash">bin/rails server</code></pre>
+            </li>
+            <li>En una terminal separada, inicie Sidekiq para procesar tareas en segundo plano:
+                <pre><code class="language-bash">bundle exec sidekiq</code></pre>
             </li>
             <li>Acceda a la aplicación a través de su navegador web:
                 <pre><code>http://localhost:3000</code></pre>
@@ -121,49 +89,8 @@ production:
             <li>Use las credenciales predeterminadas para iniciar sesión:
                 <ul>
                     <li>Email: <code>admin@timeoverflow.org</code></li>
-                    <li>Contraseña: <code>timeoverflow</code></li>
+                    <li>Contraseña: <code>1234test</code></li>
                 </ul>
-            </li>
-        </ol>
-        
-        <h2 id="docker">Instalación con Docker</h2>
-        <p>Timeoverflow también puede ser instalado utilizando Docker, lo que simplifica el proceso de configuración:</p>
-        <ol>
-            <li>Asegúrese de tener Docker y Docker Compose instalados en su sistema:
-                <pre><code class="language-bash">sudo apt install docker.io docker-compose</code></pre>
-            </li>
-            <li>Clone el repositorio de Timeoverflow:
-                <pre><code class="language-bash">git clone https://github.com/coopdevs/timeoverflow.git
-cd timeoverflow</code></pre>
-            </li>
-            <li>Construya e inicie los contenedores:
-                <pre><code class="language-bash">docker-compose build
-docker-compose up -d</code></pre>
-            </li>
-            <li>Configure la base de datos dentro del contenedor:
-                <pre><code class="language-bash">docker-compose exec app bundle exec rails db:setup</code></pre>
-            </li>
-            <li>Acceda a la aplicación a través de su navegador web:
-                <pre><code>http://localhost:3000</code></pre>
-            </li>
-        </ol>
-        
-        <h2 id="post-instalacion">Configuración Post-Instalación</h2>
-        <p>Después de la instalación, es recomendable realizar las siguientes configuraciones:</p>
-        <ol>
-            <li>Cambie la contraseña del administrador predeterminado.</li>
-            <li>Configure el servicio de correo electrónico editando <code>config/application.yml</code>:
-                <pre><code class="language-yaml">smtp_username: your_smtp_username
-smtp_password: your_smtp_password
-smtp_address: smtp.example.com
-smtp_port: 587
-smtp_domain: example.com</code></pre>
-            </li>
-            <li>Configure las variables de entorno específicas para su implementación en producción:
-                <pre><code class="language-yaml">secret_key_base: su_clave_secreta_generada
-devise_secret_key: su_clave_secreta_devise</code></pre>
-                <p>Puede generar estas claves ejecutando:</p>
-                <pre><code class="language-bash">bundle exec rails secret</code></pre>
             </li>
         </ol>
         
@@ -171,26 +98,28 @@ devise_secret_key: su_clave_secreta_devise</code></pre>
         
         <h3>Error de conexión a la base de datos</h3>
         <ul>
-            <li>Verifique que PostgreSQL esté en ejecución: <code>sudo systemctl status postgresql</code></li>
-            <li>Confirme las credenciales en <code>config/database.yml</code></li>
-            <li>Asegúrese de que el usuario de PostgreSQL tenga los permisos correctos</li>
+            <li>Verifique que PostgreSQL esté en ejecución</li>
+            <li>Revise la configuración en el archivo <code>.env</code></li>
         </ul>
         
-        <h3>Problemas con las dependencias de JavaScript</h3>
+        <h3>Error "Ruby version not installed"</h3>
         <ul>
-            <li>Intente reinstalar las dependencias: <code>yarn install --check-files</code></li>
-            <li>Limpie la caché de yarn: <code>yarn cache clean</code></li>
+            <li>Use rbenv o rvm para instalar Ruby 3.2.2:
+                <pre><code class="language-bash">rbenv install 3.2.2</code></pre>
+            </li>
         </ul>
         
-        <h3>Errores al compilar los assets</h3>
+        <h3>Error de JavaScript runtime</h3>
         <ul>
-            <li>Ejecute: <code>bundle exec rails assets:clobber</code> seguido de <code>bundle exec rails assets:precompile</code></li>
+            <li>Asegúrese de tener Node.js 16+ instalado</li>
         </ul>
         
-        <h3>Problemas con Docker</h3>
+        <h3>Si bin/setup falla</h3>
         <ul>
-            <li>Verifique los logs: <code>docker-compose logs</code></li>
-            <li>Reinicie los contenedores: <code>docker-compose down && docker-compose up -d</code></li>
+            <li>Alternativa manual:
+                <pre><code class="language-bash">psql -U tu_usuario -d timeoverflow_development -f db/structure.sql
+bundle exec rails db:seed</code></pre>
+            </li>
         </ul>
         
         <h2 id="referencias">Referencias</h2>
@@ -198,7 +127,6 @@ devise_secret_key: su_clave_secreta_devise</code></pre>
             <li>Repositorio oficial: <a href="https://github.com/coopdevs/timeoverflow" target="_blank">https://github.com/coopdevs/timeoverflow</a></li>
             <li>Documentación de Ruby on Rails: <a href="https://guides.rubyonrails.org/" target="_blank">https://guides.rubyonrails.org/</a></li>
             <li>Documentación de PostgreSQL: <a href="https://www.postgresql.org/docs/" target="_blank">https://www.postgresql.org/docs/</a></li>
-            <li>Documentación de Docker: <a href="https://docs.docker.com/" target="_blank">https://docs.docker.com/</a></li>
         </ul>
     </div>
     <footer>
